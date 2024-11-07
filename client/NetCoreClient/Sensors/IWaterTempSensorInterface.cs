@@ -1,7 +1,5 @@
-﻿namespace NetCoreClient.Sensors
+﻿namespace NetCoreClient.Sensors;
+interface IWaterTempSensorInterface
 {
-    interface IWaterTempSensorInterface
-    {
-        int WaterTemperature();
-    }
+    int WaterTemperature();
 }

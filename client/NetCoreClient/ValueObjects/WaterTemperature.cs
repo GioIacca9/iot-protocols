@@ -1,13 +1,5 @@
-﻿namespace NetCoreClient.ValueObjects
+﻿namespace NetCoreClient.ValueObjects;
+internal class WaterTemperature(int value)
 {
-    internal class WaterTemperature
-    {
-        public int Value { get; private set; }
-        
-        public WaterTemperature(int value)
-        {
-            this.Value = value;
-        }
-
-    }
+    public int Value { get; private set; } = value;
 }

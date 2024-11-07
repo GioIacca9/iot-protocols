@@ -1,24 +1,12 @@
-﻿using System.Net;
-
-namespace NetCoreClient.Protocols
+﻿namespace NetCoreClient.Protocols;
+class Http(string endpoint) : IProtocolInterface
 {
-    class Http : ProtocolInterface
+    public string Endpoint { get; set; } = endpoint;
+
+    public async void Send(string data)
     {
-        private string Endpoint;
-        //private HttpWebRequest httpWebRequest;
-
-        public Http(string endpoint)
-        {
-            this.Endpoint = endpoint;
-        }
-
-        public async void Send(string data)
-        {
-            var client = new HttpClient();
-
-            var result = await client.PostAsync(Endpoint, new StringContent(data));
-
-            Console.Out.WriteLine(result.StatusCode);
-        }
+        var client = new HttpClient();
+        var result = await client.PostAsync(Endpoint, new StringContent(data));
+        Console.Out.WriteLine(result.StatusCode);
     }
 }

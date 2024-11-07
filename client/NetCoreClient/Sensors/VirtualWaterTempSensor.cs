@@ -1,25 +1,23 @@
 ﻿using NetCoreClient.ValueObjects;
 using System.Text.Json;
 
-namespace NetCoreClient.Sensors
+namespace NetCoreClient.Sensors;
+class VirtualWaterTempSensor : IWaterTempSensorInterface, ISensorInterface
 {
-    class VirtualWaterTempSensor : IWaterTempSensorInterface, ISensorInterface
+    private readonly Random _random;
+
+    public VirtualWaterTempSensor()
     {
-        private readonly Random Random;
+        _random = new();
+    }
 
-        public VirtualWaterTempSensor()
-        {
-            Random = new Random();
-        }
+    public int WaterTemperature()
+    {
+        return new WaterTemperature(_random.Next(20)).Value;
+    }
 
-        public int WaterTemperature()
-        {
-            return new WaterTemperature(Random.Next(20)).Value;
-        }
-
-        public string ToJson()
-        {
-            return JsonSerializer.Serialize(WaterTemperature());
-        }
+    public string ToJson()
+    {
+        return JsonSerializer.Serialize(WaterTemperature());
     }
 }

@@ -1,7 +1,5 @@
-﻿namespace NetCoreClient.Sensors
+﻿namespace NetCoreClient.Sensors;
+interface ISensorInterface
 {
-    interface ISensorInterface
-    {
-        string ToJson();
-    }
+    string ToJson();
 }
