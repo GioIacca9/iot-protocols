@@ -1,20 +1,31 @@
-﻿using NetCoreClient.Sensors;
-using NetCoreClient.Protocols;
+﻿using NetCoreClient.Protocols;
+using NetCoreClient.Sensors;
 
-// define sensors
-List<ISensorInterface> sensors = [new VirtualWaterTempSensor()];
-// define protocol
-IProtocolInterface protocol = new Http("http://localhost:8011/water_coolers/123");
-
-// send data to server
-while (true)
+internal class Program
 {
-    foreach (ISensorInterface sensor in sensors)
+    public IProtocolInterface? protocol;
+    public static void Main(string[] args)
     {
-        var sensorValue = sensor.ToJson();
-        protocol.Send(sensorValue);
-        Console.WriteLine("Data sent: " + sensorValue);
-        Thread.Sleep(1000);
+        Program main = new ();
+        main.Run();
     }
 
+    private void Run()
+    {
+        protocol = new Http("https://iot.scuola.iacca.ml/temperature");
+        //protocol = new Http("https://dioenac.requestcatcher.com/");
+        Dht11 sensor = new();
+        List<ISensorInterface> sensors = [sensor];
+        sensor.SerialDataReceived += AirTemperatureChanged;
+
+        while (true) { }
+    }
+
+    private void AirTemperatureChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        Dht11 dht11 = (Dht11)sender;
+        string sensorValue = dht11.ToJson();
+        protocol?.Send(sensorValue);
+        Console.WriteLine("Data sent: " + sensorValue);
+    }
 }
