@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOTAPI", "IOTAPI.csproj", "{50EE1B55-237F-487A-894A-2C1D1597FDAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloud", "Cloud.csproj", "{051BA2DF-BD9F-4B94-B9A6-E6E1E568EAEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{50EE1B55-237F-487A-894A-2C1D1597FDAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50EE1B55-237F-487A-894A-2C1D1597FDAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50EE1B55-237F-487A-894A-2C1D1597FDAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50EE1B55-237F-487A-894A-2C1D1597FDAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{051BA2DF-BD9F-4B94-B9A6-E6E1E568EAEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{051BA2DF-BD9F-4B94-B9A6-E6E1E568EAEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{051BA2DF-BD9F-4B94-B9A6-E6E1E568EAEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{051BA2DF-BD9F-4B94-B9A6-E6E1E568EAEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3F8D5F1E-ED46-413B-8DF2-7B81213E03D5}
+		SolutionGuid = {3134A979-FD57-42B5-9541-0E0E85AF6EB6}
 	EndGlobalSection
 EndGlobal
