@@ -2,16 +2,10 @@
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Cloud;
 public class MqttProvider : IDisposable
 {
-    //private string broker = "test.mosquitto.org";
-    //private int port = 1883;
-    //private string clientId = "Cloud";
-    //private string topic = "ProgettoCasetta/0001/#";
     public string Broker { get; set; }
     public int Port { get; set; }
     public string ClientId { get; set; }
@@ -54,7 +48,6 @@ public class MqttProvider : IDisposable
             return true;
         }
     }
-
     public async Task<bool> SubscribeTopic(string topic)
     {
         if (topic != null && mqttClient != null)
@@ -70,7 +63,6 @@ public class MqttProvider : IDisposable
         MessageReceived.Invoke(this, args);
         return Task.CompletedTask;
     }
-
     public async Task<bool> Publish(string topic, string payload)
     {
         if (topic != null && mqttClient != null)
@@ -86,7 +78,6 @@ public class MqttProvider : IDisposable
         }
         else return false;
     }
-
     protected virtual void Dispose(bool disposing)
     {
         if (!disposed)
@@ -99,7 +90,6 @@ public class MqttProvider : IDisposable
             disposed = true;
         }
     }
-
     public void Dispose()
     {
         Dispose(disposing: true);
