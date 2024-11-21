@@ -4,31 +4,25 @@ using System.Text.Json;
 namespace NetCoreClient.Sensors;
 class Dht11 : IAirSensorInterface, ISensorInterface, IDisposable
 {
-    private readonly SerialPort _serial;
     private double _airTemperature;
     private double _airHumidity;
+    private DateTime _readingDate;
     private Random _random;
 
-    public double AirTemperature { get => _airTemperature;}
-    public double AirHumidity { get => _airHumidity;}
-
-    public event EventHandler<PropertyChangedEventArgs>? SerialDataReceived;
+    public double AirTemperature { get => _airTemperature; }
+    public double AirHumidity { get => _airHumidity; }
+    public DateTime ReadingDate { get => _readingDate; }
 
     public Dht11()
     {
-        while (SerialPort.GetPortNames().Length < 1) { }
         _random = new Random();
-        _serial = new(SerialPort.GetPortNames()[0], 9600);
-        _serial.DataReceived += DataReceived;
-        _serial.Open();
     }
 
-    private void DataReceived(object sender, SerialDataReceivedEventArgs e)
+    public void ReadValues()
     {
-        _airTemperature = double.Parse(_serial.ReadLine()) / 100;
+        _airTemperature = _random.NextDouble() * 100;
         _airHumidity = _random.NextDouble() * 100;
-
-        SerialDataReceived?.Invoke(this, new PropertyChangedEventArgs(AirTemperature, AirHumidity));
+        _readingDate = DateTime.Now;
     }
 
     public string ToJson()
@@ -40,9 +34,4 @@ class Dht11 : IAirSensorInterface, ISensorInterface, IDisposable
     {
         GC.SuppressFinalize(this);
     }
-}
-public class PropertyChangedEventArgs(double newTemperature, double newHumidity) : EventArgs
-{
-    public double AirTemperature { get; private set; } = newTemperature;
-    public double AirHumidity { get; private set; } = newHumidity;
 }
