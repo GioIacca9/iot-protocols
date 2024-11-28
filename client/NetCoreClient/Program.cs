@@ -24,14 +24,17 @@ public class ClientServices()
         Dht11 sensor = new();
         if (MqttProvider != null && await MqttProvider.Connect())
         {
-            if (!await MqttProvider.SubscribeTopic("iot/0001/commands/#"))
+            if (!await MqttProvider.SubscribeTopic("iot/v1/0001/commands/#"))
+            {
                 Console.WriteLine("Errore sottoscrivendo al topic.");
+            }
+
             MqttProvider.MessageReceived += MessageReceived;
-            u
+
             while (true)
             {
                 sensor.ReadValues();
-                await MqttProvider.Publish("iot/0001/data", sensor.ToJson());
+                await MqttProvider.Publish("iot/v1/0001/data", sensor.ToJson());
                 Thread.Sleep(1000);
             }
         }
@@ -40,6 +43,6 @@ public class ClientServices()
     private void MessageReceived(object? sender, EventArgs args)
     {
         var mqttArgs = (MqttApplicationMessageReceivedEventArgs)args;
-        Console.WriteLine("Command received: " + mqttArgs.ApplicationMessage.Topic  + " " + Encoding.UTF8.GetString(mqttArgs.ApplicationMessage.PayloadSegment));
+        Console.WriteLine("Command received: " + mqttArgs.ApplicationMessage.Topic + " " + Encoding.UTF8.GetString(mqttArgs.ApplicationMessage.PayloadSegment));
     }
 }
