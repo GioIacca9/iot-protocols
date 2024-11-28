@@ -1,7 +1,6 @@
 ﻿using InfluxDB.Client;
 using InfluxDB.Client.Writes;
 using MQTTnet.Client;
-using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Text.Json;
 
@@ -28,7 +27,7 @@ public class CloudServices()
             if (!await MqttProvider.SubscribeTopic("iot/0001/data"))
                 Console.WriteLine("Errore sottoscrivendo al topic.");
             MqttProvider.MessageReceived += MessageReceived;
-            await MqttProvider.Publish("iot/0001/commands/externallight", "on");
+            await MqttProvider.Publish("iot/v1/0001/commands/externallight", "on");
         }
     }
 
