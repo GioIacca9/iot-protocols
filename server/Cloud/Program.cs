@@ -1,6 +1,6 @@
 ﻿using InfluxDB.Client;
 using InfluxDB.Client.Writes;
-using MQTTnet.Client;
+using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
@@ -10,7 +10,7 @@ public class Program
     private static void Main()
     {
         CloudServices cloudServices = new();
-        cloudServices.Start();
+        cloudServices.Start().GetAwaiter().GetResult();
 
         while (true) { }
     }
@@ -18,23 +18,30 @@ public class Program
 public class CloudServices()
 {
     private Data? dataReceived;
-    public MqttProvider? MqttProvider { get; private set; }
+    public AMQPProvider? AMQPProvider { get; private set; }
     public async Task Start()
     {
-        MqttProvider = new("iot.scuola.iacca.ml", 1883, "cloud");
-        if (MqttProvider != null && await MqttProvider.Connect())
+        AMQPProvider = new();
+        try
         {
-            if (!await MqttProvider.SubscribeTopic("iot/0001/data"))
-                Console.WriteLine("Errore sottoscrivendo al topic.");
-            MqttProvider.MessageReceived += MessageReceived;
-            await MqttProvider.Publish("iot/v1/0001/commands/externallight", "on");
+            if (AMQPProvider != null)
+            {
+                AMQPProvider.MessageReceived += MessageReceived;
+                Console.WriteLine("AMQP Provider started.");
+                await AMQPProvider.Start();
+            }
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Impossibile creare la connessione con il server AMQP");
+            throw;
         }
     }
 
-    private void MessageReceived(object? sender, EventArgs args)
+    private void MessageReceived(object? sender, BasicDeliverEventArgs args)
     {
-        var mqttArgs = (MqttApplicationMessageReceivedEventArgs)args;
-        var json = Encoding.UTF8.GetString(mqttArgs.ApplicationMessage.PayloadSegment);
+        var body = args.Body.ToArray();
+        var json = Encoding.UTF8.GetString(body);
 
         if (json != null)
             dataReceived = JsonSerializer.Deserialize<Data>(json);
@@ -52,7 +59,7 @@ public class CloudServices()
 
             using var writeApi = client.GetWriteApi();
             writeApi.WritePoint(point, "iotprotocol", "its");
-            Console.WriteLine("sent");
+            Console.WriteLine(json);
         }
     }
 }
