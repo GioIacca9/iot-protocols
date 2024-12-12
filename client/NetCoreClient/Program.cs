@@ -1,15 +1,26 @@
-﻿using MQTTnet.Client;
+﻿using Microsoft.Extensions.Configuration;
+using MQTTnet.Client;
 using NetCoreClient.Protocols;
 using NetCoreClient.Sensors;
+using RabbitMQ.Client;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 internal class Program
 {
+    private static IConfigurationRoot? _configuration;
     private static void Main()
     {
         ClientServices cloudServices = new();
-        cloudServices.Start();
+        _configuration = new ConfigurationBuilder()
+        .AddUserSecrets<Program>()
+        .Build();
+        _ = cloudServices.Start(
+           _configuration["AMQP:hostname"] ?? "",
+           _configuration["AMQP:username"] ?? "",
+           _configuration["AMQP:password"] ?? "",
+           int.Parse(_configuration["AMQP:port"] ?? "0")
+           );
 
         while (true) { }
     }
@@ -17,32 +28,20 @@ internal class Program
 
 public class ClientServices()
 {
-    public MqttProvider? MqttProvider { get; private set; }
-    public async Task Start()
+    public AMQPProvider? AMQPProvider { get; private set; }
+    public async Task Start(string hostname, string username, string password, int port)
     {
-        MqttProvider = new("iot.scuola.iacca.ml", 1883, "mqtt-01");
+        AMQPProvider = new(hostname, username, password, port);
         Dht11 sensor = new();
-        if (MqttProvider != null && await MqttProvider.Connect())
+        if (AMQPProvider != null && await AMQPProvider.ConnectAsync())
         {
-            if (!await MqttProvider.SubscribeTopic("iot/v1/0001/commands/#"))
-            {
-                Console.WriteLine("Errore sottoscrivendo al topic.");
-            }
-
-            MqttProvider.MessageReceived += MessageReceived;
-
+            //await AMQPProvider.DeclareQueueAsync("states");
             while (true)
             {
                 sensor.ReadValues();
-                await MqttProvider.Publish("iot/v1/0001/data", sensor.ToJson());
-                Thread.Sleep(1000);
+                await AMQPProvider.PublishAsync(sensor.ToJson(), "states");
+                Thread.Sleep(100);
             }
         }
-    }
-
-    private void MessageReceived(object? sender, EventArgs args)
-    {
-        var mqttArgs = (MqttApplicationMessageReceivedEventArgs)args;
-        Console.WriteLine("Command received: " + mqttArgs.ApplicationMessage.Topic + " " + Encoding.UTF8.GetString(mqttArgs.ApplicationMessage.PayloadSegment));
     }
 }
