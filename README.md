@@ -11,7 +11,7 @@ I parametri di connessione (hostname, virtual host, username e password) sono da
 
 ```json
 {
-  "AMQP: {
+  "AMQP": {
     "Hostname": "",
     "VirtualHost": "/",
     "Username": "",
